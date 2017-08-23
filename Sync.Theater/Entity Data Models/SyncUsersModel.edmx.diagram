@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="e74999b4f00a48b9b8e23f18c4d8be18" Name="Diagram1" DisplayType="true" >
+        <EntityTypeShape EntityType="SyncUsersModel.User" Width="2.5" PointX="6.625" PointY="1.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SyncUsersModel.Queue" Width="2.25" PointX="10.125" PointY="5.125" />
+        <AssociationConnector Association="SyncUsersModel.UserQueue" />
+        <EntityTypeShape EntityType="SyncUsersModel.QueueItem" Width="1.5" PointX="5.875" PointY="7.5" />
+        <AssociationConnector Association="SyncUsersModel.QueueQueueItem" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

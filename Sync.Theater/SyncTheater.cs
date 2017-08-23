@@ -9,7 +9,6 @@ using WebSocketSharp.Server;
 using Sync.Theater.Utils;
 using System.IO;
 using System.Reflection;
-using Python.Runtime;
 
 namespace Sync.Theater
 {
