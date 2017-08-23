@@ -70,6 +70,35 @@
   <ItemGroup>
     <Compile Include="Config.cs" />
     <Compile Include="DatabaseConnector.cs" />
+    <Compile Include="Entity Data Models\Queue.cs">
+      <DependentUpon>SyncUsersModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity Data Models\QueueItem.cs">
+      <DependentUpon>SyncUsersModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity Data Models\SyncUsersModel.Context.cs" />
+    <Compile Include="Entity Data Models\SyncUsersModel.Context1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SyncUsersModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity Data Models\SyncUsersModel.cs" />
+    <Compile Include="Entity Data Models\SyncUsersModel.Designer.cs">
+      <DependentUpon>SyncUsersModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entity Data Models\SyncUsersModel1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SyncUsersModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity Data Models\SyncUsersModel1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SyncUsersModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Entity Data Models\User.cs">
+      <DependentUpon>SyncUsersModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Events\RecievedCommandInterpreter.cs" />
     <Compile Include="Models\PartialQueue.cs" />
     <Compile Include="Models\SyncQueue.cs" />
@@ -85,11 +114,31 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <EntityDeploy Include="Entity Data Models\SyncUsersModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>SyncUsersModel1.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Entity Data Models\SyncUsersModel.edmx.diagram">
+      <DependentUpon>SyncUsersModel.edmx</DependentUpon>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Entity Data Models\SyncUsersModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SyncUsersModel.Context1.cs</LastGenOutput>
+    </Content>
+    <Content Include="Entity Data Models\SyncUsersModel.edmx.sql" />
+    <Content Include="Entity Data Models\SyncUsersModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SyncUsersModel1.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
