@@ -70,8 +70,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConceptualModels\ConceptualQueue.cs" />
-    <Compile Include="ConceptualModels\ConceptualQueueItem.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="DatabaseConnector.cs" />
     <Compile Include="EntityDataModels\Queue.cs">
