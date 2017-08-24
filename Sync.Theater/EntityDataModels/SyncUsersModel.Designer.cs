@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'C:\Users\Alec\Sync.Theater\Sync.Theater\Entity Data Models\SyncUsersModel.edmx'. 
+﻿// T4 code generation is enabled for model 'C:\Users\Alec\Sync.Theater\Sync.Theater\EntityDataModels\SyncUsersModel.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.

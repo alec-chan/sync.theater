@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sync.Theater.EntityDataModels;
 
 namespace Sync.Theater
 {
@@ -36,118 +37,79 @@ namespace Sync.Theater
         /// <param name="Username"></param>
         /// <param name="Email"></param>
         /// <returns></returns>
-        public static SyncUser ValidateAndGetUser(string RawPassword, string Username = "", string Email = "" )
+        public static User ValidateAndGetUser(string RawPassword, string Username = "", string Email = "" )
         {
             // exit early if no username or email is provided
             if ((string.IsNullOrWhiteSpace(Username) && string.IsNullOrWhiteSpace(Email)) || (string.IsNullOrWhiteSpace(RawPassword))) { return null; }
-           
-            string queryString;
 
-            // search for user by either Username or Email
-            if (Username == "")
+            // the key we use to search for the User
+            DBSearchIdentity searchIdentity;
+            if (string.IsNullOrWhiteSpace(Username))
             {
-                queryString = string.Format("SELECT Id, Username, Email, PasswordHash FROM Users WHERE Email = '{0}'", Email);
+                searchIdentity = DBSearchIdentity.USERNAME;
             }
             else
             {
-                queryString = string.Format("SELECT Id, Username, Email, PasswordHash FROM Users WHERE Username = '{0}'", Username);
+                searchIdentity = DBSearchIdentity.EMAIL;
             }
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (var ctx = new SyncUsersModelContainer1())
             {
-                // Create the Command and Parameter objects.
-                SqlCommand command = new SqlCommand(queryString, connection);
-
-                // Open the connection in a try/catch block. 
-                // Create and execute the DataReader, writing the result
-                // set to the console window.
-                try
+                if(searchIdentity == DBSearchIdentity.USERNAME)
                 {
-                    connection.Open();
-                    SqlDataReader reader = command.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        if (UserAuth.VerifyPassword(RawPassword, (string)reader[3]))
-                        {
-                            return new SyncUser((int)reader[0], (string)reader[2], (string)reader[1]);
-                        }
-                        else
-                        {
-                            return null;
-                        }
-                    }
-                    reader.Close();
+                    return ctx.Users.Where(x => x.Username == Username && x.PasswordHash == UserAuth.HashPassword(RawPassword)).First();
                 }
-                catch (Exception ex)
+                else if(searchIdentity == DBSearchIdentity.EMAIL)
                 {
-                    Logger.Log(ex.Message);
+                    return ctx.Users.Where(x => x.Email == Email && x.PasswordHash == UserAuth.HashPassword(RawPassword)).First();
+                }
+                else
+                {
                     return null;
                 }
-
-                return null;
             }
+        }
+
+        private enum DBSearchIdentity
+        {
+            EMAIL,
+            USERNAME
         }
 
 
         public static bool AddUserToDB(string Username, string Email, string PasswordHash)
         {
             // exit early if no username or email is provided
-            if ((string.IsNullOrWhiteSpace(Username) && string.IsNullOrWhiteSpace(Email)) || (string.IsNullOrWhiteSpace(PasswordHash))) { return false; }
+            if ((string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Email)) || (string.IsNullOrWhiteSpace(PasswordHash))) { return false; }
 
-            Random rand = new Random();
-            // insert the user into table
-            string queryString = string.Format("INSERT INTO Users VALUES ({0}, '{1}', '{2}', '{3}');", rand.Next(0, int.MaxValue), Username, Email, PasswordHash );
-            
+            var newUser = new User();
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            newUser.Email = Email;
+            newUser.Username = Username;
+            newUser.PasswordHash = PasswordHash;
+            int objectsWritten = 0;
+
+            using (var ctx = new SyncUsersModelContainer1())
             {
-                // Create the Command and Parameter objects.
-                SqlCommand command = new SqlCommand(queryString, connection);
+                ctx.Users.Add(newUser);
 
-                // Open the connection in a try/catch block. 
-                try
-                {
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                    connection.Close();
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    Logger.Log(ex.Message);
-                    return false;
-                }
+                objectsWritten=ctx.SaveChanges();
             }
 
+            // if successful, only one object should have been written to db
+            return (objectsWritten == 1);
         }
 
-       /* public static bool AddSyncQueueToDB(SyncQueue queue, SyncUser user)
+        public static bool AddSyncQueueToDB(Queue queue, User user)
         {
-            if (queue==null) { return false; }
+            if (queue==null || user  ==null) { return false; }
 
-            // insert the user into table
-            //string queryString = string.Format("INSERT INTO QueueInfo VALUES ({0}, '{1}', '{2}', '{3}');", ID, Username, Email, PasswordHash);
-
-
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (var ctx = new SyncUsersModelContainer1())
             {
-                // Create the Command and Parameter objects.
-                SqlCommand command = new SqlCommand(queryString, connection);
+                var u = ctx.Users.Where(x => x.Username == user.Username && x.PasswordHash == user.PasswordHash).First();
 
-                // Open the connection in a try/catch block. 
-                try
-                {
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                    connection.Close();
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    Logger.Log(ex.Message);
-                    return false;
-                }
+                u.Queues.
             }
-        }*/
+        }
     }
 }

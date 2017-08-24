@@ -7,16 +7,16 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Sync.Theater.Entity_Data_Models
+namespace Sync.Theater.EntityDataModels
 {
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class SyncUsersModelContainer : DbContext
+    public partial class SyncUsersModelContainer1 : DbContext
     {
-        public SyncUsersModelContainer()
-            : base("name=SyncUsersModelContainer")
+        public SyncUsersModelContainer1()
+            : base("name=SyncUsersModelContainer1")
         {
         }
     

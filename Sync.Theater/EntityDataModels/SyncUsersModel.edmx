@@ -4,80 +4,84 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="SyncUsersModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="QueueItems">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="QueueId" Type="int" Nullable="false" />
-          <Property Name="URL" Type="nvarchar(max)" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Queues">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="QueueName" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="UserId" Type="int" Nullable="false" />
-        </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'sync-theater-users.dbo.Users' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <EntityType Name="Users">
-          <Key>
-            <PropertyRef Name="Id" />
-            
-            
-            
-            
-          </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Username" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="PasswordHash" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="Email" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="CustomRoomCode" Type="nvarchar(max)" Nullable="false" />
-        </EntityType>
-        <Association Name="FK_QueueQueueItem">
-          <End Role="Queues" Type="Self.Queues" Multiplicity="1" />
-          <End Role="QueueItems" Type="Self.QueueItems" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Queues">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="QueueItems">
-              <PropertyRef Name="QueueId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityContainer Name="SyncUsersModelStoreContainer">
-          <EntitySet Name="QueueItems" EntityType="Self.QueueItems" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Queues" EntityType="Self.Queues" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Users" EntityType="Self.Users" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [Users].[Id] AS [Id], 
-    [Users].[Username] AS [Username], 
-    [Users].[PasswordHash] AS [PasswordHash], 
-    [Users].[Email] AS [Email], 
-    [Users].[CustomRoomCode] AS [CustomRoomCode]
-    FROM [dbo].[Users] AS [Users]</DefiningQuery>
-          </EntitySet>
-          <AssociationSet Name="FK_QueueQueueItem" Association="Self.FK_QueueQueueItem">
-            <End Role="Queues" EntitySet="Queues" />
-            <End Role="QueueItems" EntitySet="QueueItems" />
-          </AssociationSet>
-        </EntityContainer>
-      </Schema></edmx:StorageModels>
+    <Schema Namespace="SyncUsersModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="SyncUsersModelStoreContainer">
+    <EntitySet Name="Users" EntityType="SyncUsersModel.Store.Users" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Queues" EntityType="SyncUsersModel.Store.Queues" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="QueueItems" EntityType="SyncUsersModel.Store.QueueItems" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="UserQueue" Association="SyncUsersModel.Store.UserQueue">
+      <End Role="User" EntitySet="Users" />
+      <End Role="Queue" EntitySet="Queues" />
+    </AssociationSet>
+    <AssociationSet Name="QueueQueueItem" Association="SyncUsersModel.Store.QueueQueueItem">
+      <End Role="Queue" EntitySet="Queues" />
+      <End Role="QueueItem" EntitySet="QueueItems" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Users">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Email" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Username" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="PasswordHash" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="CustomRoomCode" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Queues">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserId" Type="int" Nullable="false" />
+    <Property Name="QueueName" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="CurrentIndex" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="QueueItems">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="QueueId" Type="int" Nullable="false" />
+    <Property Name="URL" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Index" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="UserQueue">
+    <End Role="User" Type="SyncUsersModel.Store.Users" Multiplicity="1" />
+    <End Role="Queue" Type="SyncUsersModel.Store.Queues" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Queue">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="QueueQueueItem">
+    <End Role="Queue" Type="SyncUsersModel.Store.Queues" Multiplicity="1" />
+    <End Role="QueueItem" Type="SyncUsersModel.Store.QueueItems" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Queue">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="QueueItem">
+        <PropertyRef Name="QueueId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="SyncUsersModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
-        <EntityContainer Name="SyncUsersModelContainer" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="SyncUsersModelContainer1" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Users" EntityType="SyncUsersModel.User" />
           <EntitySet Name="Queues" EntityType="SyncUsersModel.Queue" />
+          <EntitySet Name="QueueItems" EntityType="SyncUsersModel.QueueItem" />
           <AssociationSet Name="UserQueue" Association="SyncUsersModel.UserQueue">
             <End Role="User" EntitySet="Users" />
             <End Role="Queue" EntitySet="Queues" />
           </AssociationSet>
-          <EntitySet Name="QueueItems" EntityType="SyncUsersModel.QueueItem" />
           <AssociationSet Name="QueueQueueItem" Association="SyncUsersModel.QueueQueueItem">
             <End Role="Queue" EntitySet="Queues" />
             <End Role="QueueItem" EntitySet="QueueItems" />
@@ -88,21 +92,32 @@ warning 6002: The table/view 'sync-theater-users.dbo.Users' does not have a prim
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Username" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
-          <Property Name="PasswordHash" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
-          <Property Name="Email" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
-          <Property Name="CustomRoomCode" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
           <NavigationProperty Name="Queues" Relationship="SyncUsersModel.UserQueue" FromRole="User" ToRole="Queue" />
+          <Property Name="Email" Type="String" Nullable="false" />
+          <Property Name="Username" Type="String" Nullable="false" />
+          <Property Name="PasswordHash" Type="String" Nullable="false" />
+          <Property Name="CustomRoomCode" Type="String" Nullable="false" />
         </EntityType>
         <EntityType Name="Queue">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="QueueName" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
           <NavigationProperty Name="User" Relationship="SyncUsersModel.UserQueue" FromRole="Queue" ToRole="User" />
           <Property Name="UserId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="QueueItems" Relationship="SyncUsersModel.QueueQueueItem" FromRole="Queue" ToRole="QueueItem" />
+          <Property Name="QueueName" Type="String" Nullable="false" />
+          <Property Name="CurrentIndex" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="QueueItem">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Queue" Relationship="SyncUsersModel.QueueQueueItem" FromRole="QueueItem" ToRole="Queue" />
+          <Property Name="QueueId" Type="Int32" Nullable="false" />
+          <Property Name="URL" Type="String" Nullable="false" />
+          <Property Name="Index" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="UserQueue">
           <End Type="SyncUsersModel.User" Role="User" Multiplicity="1" />
@@ -116,15 +131,6 @@ warning 6002: The table/view 'sync-theater-users.dbo.Users' does not have a prim
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="QueueItem">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <NavigationProperty Name="Queue" Relationship="SyncUsersModel.QueueQueueItem" FromRole="QueueItem" ToRole="Queue" />
-          <Property Name="QueueId" Type="Int32" Nullable="false" />
-          <Property Name="URL" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
-        </EntityType>
         <Association Name="QueueQueueItem">
           <End Type="SyncUsersModel.Queue" Role="Queue" Multiplicity="1" />
           <End Type="SyncUsersModel.QueueItem" Role="QueueItem" Multiplicity="*" />
@@ -142,14 +148,14 @@ warning 6002: The table/view 'sync-theater-users.dbo.Users' does not have a prim
     <!-- C-S mapping content -->
     <edmx:Mappings>
     <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-  <EntityContainerMapping StorageEntityContainer="SyncUsersModelStoreContainer" CdmEntityContainer="SyncUsersModelContainer">
+  <EntityContainerMapping StorageEntityContainer="SyncUsersModelStoreContainer" CdmEntityContainer="SyncUsersModelContainer1">
     <EntitySetMapping Name="Users">
       <EntityTypeMapping TypeName="IsTypeOf(SyncUsersModel.User)">
         <MappingFragment StoreEntitySet="Users">
           <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
           <ScalarProperty Name="Username" ColumnName="Username" />
           <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
-          <ScalarProperty Name="Email" ColumnName="Email" />
           <ScalarProperty Name="CustomRoomCode" ColumnName="CustomRoomCode" />
         </MappingFragment>
       </EntityTypeMapping>
@@ -158,8 +164,9 @@ warning 6002: The table/view 'sync-theater-users.dbo.Users' does not have a prim
       <EntityTypeMapping TypeName="IsTypeOf(SyncUsersModel.Queue)">
         <MappingFragment StoreEntitySet="Queues">
           <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="QueueName" ColumnName="QueueName" />
           <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="QueueName" ColumnName="QueueName" />
+          <ScalarProperty Name="CurrentIndex" ColumnName="CurrentIndex" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -169,6 +176,7 @@ warning 6002: The table/view 'sync-theater-users.dbo.Users' does not have a prim
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="QueueId" ColumnName="QueueId" />
           <ScalarProperty Name="URL" ColumnName="URL" />
+          <ScalarProperty Name="Index" ColumnName="Index" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -188,7 +196,6 @@ warning 6002: The table/view 'sync-theater-users.dbo.Users' does not have a prim
         <DesignerProperty Name="EnablePluralization" Value="True" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
         <DesignerProperty Name="UseLegacyProvider" Value="False" />
-        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
       </DesignerInfoPropertySet>
     </edmx:Options>
     <!-- Diagram content (shape and connector positions) -->

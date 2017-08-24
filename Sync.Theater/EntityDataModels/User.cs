@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Sync.Theater.Entity_Data_Models
+namespace Sync.Theater.EntityDataModels
 {
     using System;
     using System.Collections.Generic;
@@ -21,9 +21,9 @@ namespace Sync.Theater.Entity_Data_Models
         }
     
         public int Id { get; set; }
+        public string Email { get; set; }
         public string Username { get; set; }
         public string PasswordHash { get; set; }
-        public string Email { get; set; }
         public string CustomRoomCode { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
