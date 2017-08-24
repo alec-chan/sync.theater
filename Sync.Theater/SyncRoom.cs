@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using WebSocketSharp.Server;
 using Sync.Theater.Utils;
-using Sync.Theater.Models;
 using Sync.Theater.Events;
 using Newtonsoft.Json;
+using Sync.Theater.EntityDataModels;
 
 namespace Sync.Theater
 {
@@ -21,7 +21,7 @@ namespace Sync.Theater
 
         public SyncService Owner;
 
-        public PartialQueue CurrentQueue;
+        public Queue CurrentQueue;
 
         private int likes;
 
@@ -32,7 +32,7 @@ namespace Sync.Theater
             this.Logger = new SyncLogger("Room " + code, ConsoleColor.Cyan);
             this.Services = new List<SyncService>();
             this.RoomCode = code;
-            this.CurrentQueue = new PartialQueue();
+            this.CurrentQueue = new Queue();
             this.likes = 0;
             Logger.Log("initialized.");
         }
@@ -58,21 +58,9 @@ namespace Sync.Theater
             {
                 Logger.Log("Client [{0}] connected. {1} clients online in room {2}.", s.Nickname, Services.Count, RoomCode);
 
-                if (CurrentQueue.URLs != null)
+                if (CurrentQueue.QueueItems != null)
                 {
-                    // update new user with queue
-                    var res = new
-                    {
-                        CommandType = CommandType.QUEUEUPDATE.Value,
-                        Queue = new
-                        {
-                            Name = CurrentQueue.Name,
-                            QueueIndex = CurrentQueue.QueueIndex,
-                            URLs = CurrentQueue.URLs
-                        }
-                    };
-
-                    s.SendMessage(JsonConvert.SerializeObject(res));
+                    s.SendMessage(ConvertQueueToJSON(CurrentQueue));
                 }
 
 
@@ -195,6 +183,65 @@ namespace Sync.Theater
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, length)
               .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+        private static string[] QueueItemsToArray(ICollection<QueueItem> set)
+        {
+            string[] urls = new string[set.Count];
+            for(int i = 0; i<set.Count; i++)
+            {
+                urls[i] = set.Where(x => x.Index == i).First().URL;
+            }
+
+            return urls;
+        }
+
+        private static ICollection<QueueItem> ArrayToQueueItems(string[] urls, Queue queue)
+        {
+            ICollection<QueueItem> queueItems = new HashSet<QueueItem>();
+            for(int i=0; i<urls.Length; i++)
+            {
+                var item = new QueueItem();
+
+                item.Index = i;
+                item.URL = urls[i];
+                item.Queue = queue;
+                item.QueueId = queue.Id;
+
+                queueItems.Add(item);
+            }
+            return queueItems;
+        }
+
+        public static Queue ConvertJSONToQueue(dynamic JSONObj)
+        {
+            string name = JSONObj.Queue.Name;
+            int index = JSONObj.Queue.QueueIndex;
+            string[] urls = JSONObj.Queue.URLs.ToObject<string[]>();
+
+            Queue queue = new Queue();
+
+            queue.QueueName = name;
+            queue.CurrentIndex = index;
+            queue.QueueItems = ArrayToQueueItems(urls, queue);
+
+            return queue;
+        }
+
+        public static string ConvertQueueToJSON(Queue queue)
+        {
+            var res = new
+            {
+                CommandType = CommandType.QUEUEUPDATE.Value,
+                Queue = new
+                {
+                    Name = queue.QueueName,
+                    QueueIndex = queue.CurrentIndex,
+                    URLs = QueueItemsToArray(queue.QueueItems)
+                }
+            };
+
+            return JsonConvert.SerializeObject(res);
         }
     }
 }

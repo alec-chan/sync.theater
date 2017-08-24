@@ -8,7 +8,7 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Principal;
 using System.Security.Cryptography;
-using Sync.Theater.Models;
+using Sync.Theater.EntityDataModels;
 
 namespace Sync.Theater
 {
@@ -30,7 +30,7 @@ namespace Sync.Theater
         {
             if ((string.IsNullOrWhiteSpace(Username) && string.IsNullOrWhiteSpace(Email)) || (string.IsNullOrWhiteSpace(RawPassword))) { return null; }
 
-            SyncUser user = DatabaseConnector.ValidateAndGetUser(RawPassword, Username, Email);
+            User user = DatabaseConnector.ValidateAndGetUser(RawPassword, Username, Email);
 
             if (user != null)
                 return GenerateToken(user.Username);

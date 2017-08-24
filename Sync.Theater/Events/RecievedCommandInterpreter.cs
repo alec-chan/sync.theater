@@ -117,22 +117,9 @@ namespace Sync.Theater.Events
         {
             if (s.Permissions == UserPermissionLevel.OWNER || s.Permissions == UserPermissionLevel.TRUSTED)
             {
-                room.CurrentQueue.Name = message.Queue.Name;
-                room.CurrentQueue.QueueIndex = message.Queue.QueueIndex;
-                room.CurrentQueue.URLs = message.Queue.URLs.ToObject<string[]>();
+                room.CurrentQueue = SyncRoom.ConvertJSONToQueue(message);
 
-                var res = new
-                {
-                    CommandType = CommandType.QUEUEUPDATE.Value,
-                    Queue = new
-                    {
-                        Name = room.CurrentQueue.Name,
-                        QueueIndex = room.CurrentQueue.QueueIndex,
-                        URLs = room.CurrentQueue.URLs
-                    }
-                };
-
-                room.BroadcastExcept(JsonConvert.SerializeObject(res), s);
+                room.Broadcast(SyncRoom.ConvertQueueToJSON(room.CurrentQueue));
             }
         }
 

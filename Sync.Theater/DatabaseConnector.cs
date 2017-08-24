@@ -1,5 +1,4 @@
-﻿using Sync.Theater.Models;
-using Sync.Theater.Utils;
+﻿using Sync.Theater.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data;

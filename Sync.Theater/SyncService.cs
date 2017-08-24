@@ -9,7 +9,6 @@ using WebSocketSharp;
 using WebSocketSharp.Net;
 using WebSocketSharp.Server;
 using Sync.Theater.Utils;
-using Sync.Theater.Models;
 
 namespace Sync.Theater
 {
