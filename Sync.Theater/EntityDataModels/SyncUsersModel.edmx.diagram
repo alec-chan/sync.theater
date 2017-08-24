@@ -4,11 +4,11 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="e74999b4f00a48b9b8e23f18c4d8be18" Name="Diagram1" DisplayType="true" >
-        <EntityTypeShape EntityType="SyncUsersModel.User" Width="2.5" PointX="6.625" PointY="1.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="SyncUsersModel.Queue" Width="2.25" PointX="10.125" PointY="5.125" />
+      <Diagram DiagramId="f51ca435cfa4491da58ab7b7163037ba" Name="Diagram1" >
+        <EntityTypeShape EntityType="SyncUsersModel.User" Width="1.5" PointX="6.125" PointY="1.5" />
+        <EntityTypeShape EntityType="SyncUsersModel.Queue" Width="1.5" PointX="3.75" PointY="5.25" />
+        <EntityTypeShape EntityType="SyncUsersModel.QueueItem" Width="1.5" PointX="8" PointY="6" />
         <AssociationConnector Association="SyncUsersModel.UserQueue" />
-        <EntityTypeShape EntityType="SyncUsersModel.QueueItem" Width="1.5" PointX="5.875" PointY="7.5" />
         <AssociationConnector Association="SyncUsersModel.QueueQueueItem" />
       </Diagram>
     </edmx:Diagrams>

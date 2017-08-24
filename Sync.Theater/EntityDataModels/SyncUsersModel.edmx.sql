@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 08/23/2017 01:27:09
--- Generated from EDMX file: C:\Users\Alec\Sync.Theater\Sync.Theater\Entity Data Models\SyncUsersModel.edmx
+-- Date Created: 08/23/2017 16:42:02
+-- Generated from EDMX file: C:\Users\Alec\Sync.Theater\Sync.Theater\EntityDataModels\SyncUsersModel.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
@@ -45,9 +45,9 @@ GO
 -- Creating table 'Users'
 CREATE TABLE [dbo].[Users] (
     [Id] int IDENTITY(1,1) NOT NULL,
+    [Email] nvarchar(max)  NOT NULL,
     [Username] nvarchar(max)  NOT NULL,
     [PasswordHash] nvarchar(max)  NOT NULL,
-    [Email] nvarchar(max)  NOT NULL,
     [CustomRoomCode] nvarchar(max)  NOT NULL
 );
 GO
@@ -55,8 +55,9 @@ GO
 -- Creating table 'Queues'
 CREATE TABLE [dbo].[Queues] (
     [Id] int IDENTITY(1,1) NOT NULL,
+    [UserId] int  NOT NULL,
     [QueueName] nvarchar(max)  NOT NULL,
-    [UserId] int  NOT NULL
+    [CurrentIndex] int  NOT NULL
 );
 GO
 
@@ -64,7 +65,8 @@ GO
 CREATE TABLE [dbo].[QueueItems] (
     [Id] int IDENTITY(1,1) NOT NULL,
     [QueueId] int  NOT NULL,
-    [URL] nvarchar(max)  NOT NULL
+    [URL] nvarchar(max)  NOT NULL,
+    [Index] int  NOT NULL
 );
 GO
 

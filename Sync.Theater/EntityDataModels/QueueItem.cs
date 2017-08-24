@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Sync.Theater.Entity_Data_Models
+namespace Sync.Theater.EntityDataModels
 {
     using System;
     using System.Collections.Generic;
@@ -17,6 +17,7 @@ namespace Sync.Theater.Entity_Data_Models
         public int Id { get; set; }
         public int QueueId { get; set; }
         public string URL { get; set; }
+        public int Index { get; set; }
     
         public virtual Queue Queue { get; set; }
     }
