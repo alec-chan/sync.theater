@@ -34,7 +34,6 @@ namespace Sync.Theater
             this.RoomCode = code;
             this.CurrentQueue = new Queue();
             this.likes = 0;
-            Logger.Log("initialized.");
         }
 
         public string AddService(SyncService Service)
@@ -56,7 +55,7 @@ namespace Sync.Theater
         {
             if(action == ConnectionAction.OPENED)
             {
-                Logger.Log("Client [{0}] connected. {1} clients online in room {2}.", s.Nickname, Services.Count, RoomCode);
+                Logger.Log("Client [{0}] connected. {1} clients online in room {2}.", s.ServiceUser.Username, Services.Count, RoomCode);
 
                 if (CurrentQueue.QueueItems != null)
                 {
@@ -68,7 +67,7 @@ namespace Sync.Theater
                 var res1 = new
                 {
                     CommandType = CommandType.SETUSERNICKNAME.Value,
-                    Nickname = s.Nickname
+                    Nickname = s.ServiceUser.Username
                 };
 
                 s.SendMessage(JsonConvert.SerializeObject(res1));
@@ -87,7 +86,7 @@ namespace Sync.Theater
             {
                 int index = Services.FindIndex(x => x.ID == s.ID);
                 Services.RemoveAt(index);
-                Logger.Log("Client [{0}] disconnected. {1} clients online in room {2}.", s.Nickname, Services.Count, RoomCode);
+                Logger.Log("Client [{0}] disconnected. {1} clients online in room {2}.", s.ServiceUser.Username, Services.Count, RoomCode);
             }
 
 
@@ -112,9 +111,14 @@ namespace Sync.Theater
             {
 
                 userlist.Add(new {
+<<<<<<< HEAD
                     Nickname = sr.Nickname,
                     PermissionLevel = sr.Permissions,
                     Status = sr.status
+=======
+                    Nickname = sr.ServiceUser.Username,
+                    PermissionLevel = sr.Permissions
+>>>>>>> Add user to syncservice and remain anonymous until login
                 });
             }
 
@@ -149,7 +153,7 @@ namespace Sync.Theater
 
         public SyncService GetServiceByNickname(string nick)
         {
-            return Services.First(sr => sr.Nickname == nick);
+            return Services.First(sr => sr.ServiceUser.Username == nick);
         }
 
         private void ReassessOwnership(SyncService deltaUser, ConnectionAction action)

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Sync.Theater.EntityDataModels;
 using Sync.Theater.Utils;
 using System;
 using System.Collections.Generic;
@@ -87,17 +88,18 @@ namespace Sync.Theater.Events
         public static void OnRegisterUser(dynamic message, SyncService s, SyncRoom room)
         {
             var success = false;
-
-            if (UserAuth.RegisterUser((string)message.Username, (string)message.Email, (string)message.Password))
+            User u = UserAuth.RegisterUser((string)message.Username, (string)message.Email, (string)message.Password);
+            if (u!=null)
             {
-                Logger.Log("Client {0} successfully registered as {1}.", s.Nickname, message.Username);
-                s.Nickname = message.Username;
+                Logger.Log("Client {0} successfully registered as {1}.", s.ServiceUser.Username, message.Username);
+                s.ServiceUser = u;
 
                 success = true;
             }
             else
             {
                 Logger.Log("Something went wrong with registration");
+                success = false;
             }
 
             var res = new

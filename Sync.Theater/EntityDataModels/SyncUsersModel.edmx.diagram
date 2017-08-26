@@ -5,9 +5,9 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="f51ca435cfa4491da58ab7b7163037ba" Name="Diagram1" >
-        <EntityTypeShape EntityType="SyncUsersModel.User" Width="1.5" PointX="10.5" PointY="1.625" />
-        <EntityTypeShape EntityType="SyncUsersModel.Queue" Width="1.5" PointX="8.125" PointY="5.375" />
-        <EntityTypeShape EntityType="SyncUsersModel.QueueItem" Width="1.5" PointX="12.375" PointY="6.125" />
+        <EntityTypeShape EntityType="SyncUsersModel.User" Width="1.5" PointX="8.375" PointY="1.5" />
+        <EntityTypeShape EntityType="SyncUsersModel.Queue" Width="1.5" PointX="4" PointY="3.875" />
+        <EntityTypeShape EntityType="SyncUsersModel.QueueItem" Width="1.5" PointX="8.375" PointY="5.875" />
         <AssociationConnector Association="SyncUsersModel.UserQueue" />
         <AssociationConnector Association="SyncUsersModel.QueueQueueItem" />
       </Diagram>

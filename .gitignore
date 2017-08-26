@@ -298,3 +298,6 @@ __pycache__/
 *.xsd.cs
 
 Sync.Theater/Sync.Theater.Web
+
+# bcomp files
+*.orig

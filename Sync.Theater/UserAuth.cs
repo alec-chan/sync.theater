@@ -45,9 +45,9 @@ namespace Sync.Theater
         /// <param name="Email"></param>
         /// <param name="RawPassword"></param>
         /// <returns></returns>
-        public static bool RegisterUser( string Username, string Email, string RawPassword )
+        public static User RegisterUser( string Username, string Email, string RawPassword )
         {
-            if ((string.IsNullOrWhiteSpace(Username) && string.IsNullOrWhiteSpace(Email)) || (string.IsNullOrWhiteSpace(RawPassword))) { return false; }
+            if ((string.IsNullOrWhiteSpace(Username) && string.IsNullOrWhiteSpace(Email)) || (string.IsNullOrWhiteSpace(RawPassword))) { return null; }
 
             // if nobody else has registered with this info then register.
             if (DatabaseConnector.ValidateAndGetUser(RawPassword, Username, Email) == null)
@@ -56,7 +56,7 @@ namespace Sync.Theater
             }
             else
             {
-                return false;
+                return null;
             }
 
         }

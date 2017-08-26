@@ -16,17 +16,12 @@ namespace Sync.Theater
     /// </summary>
     class DatabaseConnector
     {
-        // build connection string based off our config.json variables
-        private static string connectionString;
-
         private static SyncLogger Logger;
 
 
         static DatabaseConnector()
         {
             Logger = new SyncLogger("DatabaseConnector", ConsoleColor.Magenta);
-
-            connectionString = ConfigManager.Config.SQLConnectionString.Replace("{userid}", ConfigManager.Config.DBUsername).Replace("{pwd}", ConfigManager.Config.DBPassword);
         }
         /// <summary>
         /// Given the PasswordHash, Username and or Email of the user, returns a SyncUser created from database data.
@@ -76,27 +71,27 @@ namespace Sync.Theater
         }
 
 
-        public static bool AddUserToDB(string Username, string Email, string PasswordHash)
+        public static User AddUserToDB(string Username, string Email, string PasswordHash)
         {
             // exit early if no username or email is provided
-            if ((string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Email)) || (string.IsNullOrWhiteSpace(PasswordHash))) { return false; }
+            if ((string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Email)) || (string.IsNullOrWhiteSpace(PasswordHash))) { return null; }
 
             var newUser = new User();
 
             newUser.Email = Email;
             newUser.Username = Username;
             newUser.PasswordHash = PasswordHash;
-            int objectsWritten = 0;
 
             using (var ctx = new SyncUsersModelContainer1())
             {
-                ctx.Users.Add(newUser);
+                var u = ctx.Users.Add(newUser);
 
-                objectsWritten=ctx.SaveChanges();
+                ctx.SaveChanges();
+
+                return u;
             }
 
-            // if successful, only one object should have been written to db
-            return (objectsWritten == 1);
+            
         }
 
         public static bool AddSyncQueueToDB(Queue queue, User user)
@@ -107,7 +102,18 @@ namespace Sync.Theater
             {
                 var u = ctx.Users.Where(x => x.Username == user.Username && x.PasswordHash == user.PasswordHash).First();
 
-                u.Queues.
+                if(u != null)
+                {
+                    u.Queues.Add(queue);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+                
+
+                
             }
         }
     }

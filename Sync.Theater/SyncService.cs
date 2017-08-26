@@ -9,6 +9,7 @@ using WebSocketSharp;
 using WebSocketSharp.Net;
 using WebSocketSharp.Server;
 using Sync.Theater.Utils;
+using Sync.Theater.EntityDataModels;
 
 namespace Sync.Theater
 {
@@ -21,11 +22,13 @@ namespace Sync.Theater
         public delegate void MessageRecievedHandler(dynamic message, SyncService s);
         public event MessageRecievedHandler MessageRecieved = delegate { };
 
-        public string Nickname;
-
         private string UserToken;
 
+<<<<<<< HEAD
         public UserStatus status;
+=======
+        public User ServiceUser;
+>>>>>>> Add user to syncservice and remain anonymous until login
 
         private UserPermissionLevel _permissions;
         public UserPermissionLevel Permissions
@@ -44,8 +47,14 @@ namespace Sync.Theater
 
         public SyncService()
         {
+<<<<<<< HEAD
             Nickname = GfycatNameGenerator.GetName();
             status = UserStatus.WATCHING;
+=======
+            // we start with an anonymous user and assign a random nickname until the service logs in.
+            ServiceUser = new User();
+            ServiceUser.Username = GfycatNameGenerator.GetName();
+>>>>>>> Add user to syncservice and remain anonymous until login
         }
 
         public SyncService(SyncRoom room)
@@ -53,7 +62,9 @@ namespace Sync.Theater
             // some kind of dependency injection trick (I think..) - but it works 
             room.AddService(this);
 
-            Nickname = GfycatNameGenerator.GetName();
+            // we start with an anonymous user and assign a random nickname until the service logs in.
+            ServiceUser = new User();
+            ServiceUser.Username = GfycatNameGenerator.GetName();
         }
 
         protected override void OnMessage(MessageEventArgs e)
