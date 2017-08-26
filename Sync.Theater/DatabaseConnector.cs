@@ -50,6 +50,7 @@ namespace Sync.Theater
             using (var ctx = new SyncUsersModelContainer1())
             {
                 if(searchIdentity == DBSearchIdentity.USERNAME)
+<<<<<<< HEAD
                 {
                     return ctx.Users.Where(x => x.Username == Username && x.PasswordHash == UserAuth.HashPassword(RawPassword)).First();
                 }
@@ -57,6 +58,15 @@ namespace Sync.Theater
                 {
                     return ctx.Users.Where(x => x.Email == Email && x.PasswordHash == UserAuth.HashPassword(RawPassword)).First();
                 }
+=======
+                {
+                    return ctx.Users.Where(x => x.Username == Username && x.PasswordHash == UserAuth.HashPassword(RawPassword)).First();
+                }
+                else if(searchIdentity == DBSearchIdentity.EMAIL)
+                {
+                    return ctx.Users.Where(x => x.Email == Email && x.PasswordHash == UserAuth.HashPassword(RawPassword)).First();
+                }
+>>>>>>> 3e57e9e410e505b26f32ad119ea55a8341570bce
                 else
                 {
                     return null;
@@ -74,6 +84,7 @@ namespace Sync.Theater
         public static User AddUserToDB(string Username, string Email, string PasswordHash)
         {
             // exit early if no username or email is provided
+<<<<<<< HEAD
             if ((string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Email)) || (string.IsNullOrWhiteSpace(PasswordHash))) { return null; }
 
             var newUser = new User();
@@ -92,6 +103,26 @@ namespace Sync.Theater
             }
 
             
+=======
+            if ((string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Email)) || (string.IsNullOrWhiteSpace(PasswordHash))) { return false; }
+
+            var newUser = new User();
+
+            newUser.Email = Email;
+            newUser.Username = Username;
+            newUser.PasswordHash = PasswordHash;
+            int objectsWritten = 0;
+
+            using (var ctx = new SyncUsersModelContainer1())
+            {
+                ctx.Users.Add(newUser);
+
+                objectsWritten=ctx.SaveChanges();
+            }
+
+            // if successful, only one object should have been written to db
+            return (objectsWritten == 1);
+>>>>>>> 3e57e9e410e505b26f32ad119ea55a8341570bce
         }
 
         public static bool AddSyncQueueToDB(Queue queue, User user)
@@ -102,6 +133,7 @@ namespace Sync.Theater
             {
                 var u = ctx.Users.Where(x => x.Username == user.Username && x.PasswordHash == user.PasswordHash).First();
 
+<<<<<<< HEAD
                 if(u != null)
                 {
                     u.Queues.Add(queue);
@@ -114,6 +146,9 @@ namespace Sync.Theater
                 
 
                 
+=======
+                u.Queues.
+>>>>>>> 3e57e9e410e505b26f32ad119ea55a8341570bce
             }
         }
     }
