@@ -24,11 +24,7 @@ namespace Sync.Theater
 
         private string UserToken;
 
-<<<<<<< HEAD
-        public UserStatus status;
-=======
         public User ServiceUser;
->>>>>>> Add user to syncservice and remain anonymous until login
 
         private UserPermissionLevel _permissions;
         public UserPermissionLevel Permissions
@@ -47,14 +43,9 @@ namespace Sync.Theater
 
         public SyncService()
         {
-<<<<<<< HEAD
-            Nickname = GfycatNameGenerator.GetName();
-            status = UserStatus.WATCHING;
-=======
             // we start with an anonymous user and assign a random nickname until the service logs in.
             ServiceUser = new User();
             ServiceUser.Username = GfycatNameGenerator.GetName();
->>>>>>> Add user to syncservice and remain anonymous until login
         }
 
         public SyncService(SyncRoom room)
