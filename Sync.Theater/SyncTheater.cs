@@ -15,6 +15,7 @@ namespace Sync.Theater
     public class SyncTheater
     {
         public static List<SyncRoom> rooms;
+        public static List<SyncRoom> reservedRooms;
         private static HttpServer httpsv;
         private static SyncLogger Logger;
 
@@ -22,8 +23,10 @@ namespace Sync.Theater
         {
             Logger = new SyncLogger("Server", ConsoleColor.Red);
             rooms = new List<SyncRoom>();
-
+            reservedRooms = new List<SyncRoom>();
             httpsv = new HttpServer(ConfigManager.Config.Port);
+
+            reserveRooms();
 
             // Set the document root path.
             httpsv.RootPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), ConfigManager.Config.HTTPRelativeBasePath);
@@ -34,7 +37,6 @@ namespace Sync.Theater
                 {
                     if (rooms[i].ActiveUsers == 0)
                     {
-                        Logger.Log("[Cleanup] Deleting inactive room {0}.", rooms[i].RoomCode);
                         DeleteRoom(rooms[i].RoomCode);
                     }
                 }
@@ -53,10 +55,10 @@ namespace Sync.Theater
                     if (req.Headers.Get("x-verify-roomcode") != null)
                     {
                         var code= req.Headers.Get("x-verify-roomcode");
-                        if(code.Length > 6)
+                        /*if(code.Length > 6)
                         {
                             code = code.Substring(code.Length - 6);
-                        }
+                        }*/
                         if (GetRoomByCode(code) != null)
                         {
                             res.StatusCode = 200;
@@ -78,7 +80,7 @@ namespace Sync.Theater
                 {
 
                     // if we might have a match for a valid room code
-                    if (path.Length == 7 && !path.Contains("."))
+                    if (/*path.Length == 7 &&*/ !path.Contains(".") && path.Length > 1)
                     {
                         // attempt to get the room by the code given
                         var room = GetRoomByCode(path.Remove(0, 1));
@@ -185,7 +187,29 @@ namespace Sync.Theater
 
         public static void DeleteRoom(string code)
         {
-            rooms.RemoveAt(rooms.FindIndex(r => { return r.RoomCode == code; }));
+            if(reservedRooms.Where(x => x.RoomCode == code) == null)
+            {
+                rooms.RemoveAt(rooms.FindIndex(r => { return r.RoomCode == code; }));
+                Logger.Log("[Cleanup] Deleting inactive room {0}.", code);
+
+            }
+            else
+            {
+                Logger.Log("[Cleanup] Cannot delete reserved: {0}.", code);
+
+            }
+        }
+
+
+        private static void reserveRooms()
+        {
+            // TODO: implementation
+           // var res = new List<SyncRoom>();
+
+            reservedRooms.Add(CreateRoom("testroom1"));
+            reservedRooms.Add(CreateRoom("testroom2"));
+
+            
         }
 
 
